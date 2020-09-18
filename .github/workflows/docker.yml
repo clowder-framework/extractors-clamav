@@ -59,7 +59,7 @@ jobs:
           BUILDNUMBER: ${{ github.run_number }}
           GITSHA1: ${{ github.sha  }}
         with:
-          name: ${{ github.repository_owner }}/clowder/${{ github.event.repository.name }}
+          name: ${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ github.event.repository.name }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           tags: "${{ env.TAGS }}"
