@@ -86,7 +86,7 @@ jobs:
         id: filecheck
         if: github.event_name != 'pull_request' && github.repository == env.MASTER_REPO
         run: |
-          if [ -e "README" ]; then
+          if [ -e "README.md" ]; then
             echo "##[set-output name=exists;]true"
           else
             echo "##[set-output name=exists;]false"
@@ -98,4 +98,4 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           DOCKERHUB_REPOSITORY: ${{ env.DOCKERHUB_ORG }}/${{ github.event.repository.name }}
-          README_FILEPATH: README
+          README_FILEPATH: README.md
