@@ -15,7 +15,7 @@ env:
   MASTER_REPO: clowder-framework/extractors-clamav
 
 jobs:
-  docker:
+  pyclowder:
     runs-on: ubuntu-latest
 
     steps:
