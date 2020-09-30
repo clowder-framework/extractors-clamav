@@ -50,4 +50,4 @@ jobs:
         if: github.repository == env.MASTER_REPO
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: "Updated pyclowder to ${{ PYCLOWDER }}"
+          commit-message: "Updated pyclowder to ${{ env.PYCLOWDER }}"
