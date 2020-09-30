@@ -1,3 +1,6 @@
+# ignore ~ files
+*~
+
 .idea/*
 .DS_Store
 
