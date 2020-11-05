@@ -52,18 +52,18 @@ jobs:
 
       # this will publish to the actor (person) github packages
       - name: Publish to GitHub
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.repository == env.MASTER_REPO
         uses: elgohr/Publish-Docker-Github-Action@2.18
         env:
           VERSION: ${{ env.VERSION }}
           BUILDNUMBER: ${{ github.run_number }}
           GITSHA1: ${{ github.sha  }}
         with:
-          name: ${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ github.event.repository.name }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ github.repository }}/${{ github.event.repository.name }}
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_PASSWORD }}
           tags: "${{ env.TAGS }}"
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           buildargs: VERSION,BUILDNUMBER,GITSHA1
 
       # this will publish to the clowder dockerhub repo
