@@ -47,6 +47,10 @@ jobs:
       # build the docker image, this will always run to make sure
       # the Dockerfile still works.
       - name: Build image
+        env:
+          VERSION: ${{ env.VERSION }}
+          BUILDNUMBER: ${{ github.run_number }}
+          GITSHA1: ${{ github.sha  }}
         run: |
           docker build --tag image .
 
