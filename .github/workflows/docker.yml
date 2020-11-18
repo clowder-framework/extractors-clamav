@@ -31,22 +31,23 @@ jobs:
       - uses: actions/checkout@v2
 
       # calculate some variables that are used later
-      - name: github branch
+      - name: Extractor Version
         run: |
           version="$(awk '/"version":/ { print $2 }' extractor_info.json | sed 's/^.*"\([0-9\.]*\)".*$/\1/')"
           echo "VERSION=${version}" >> $GITHUB_ENV
-          tags="latest"
+          tags=""
           oldversion=""
           while [ "${oldversion}" != "${version}" ]; do
             oldversion="${version}"
-            tags="${tags},${version}"
+            tags="${version},${tags}"
             version=${version%.*}
           done
+          tags="latest,${tags}"
           echo "TAGS=${tags}" >> $GITHUB_ENV
 
       # build the docker image, this will always run to make sure
       # the Dockerfile still works.
-      - name: Docker build
+      - name: Build image
         uses: elgohr/Publish-Docker-Github-Action@2.22
         env:
           VERSION: ${{ env.VERSION }}
@@ -61,9 +62,9 @@ jobs:
           buildargs: VERSION,BUILDNUMBER,GITSHA1
           no_push: true
 
-      # this will publish to the actor (person) github packages
+      # this will publish to github container registry
       - name: Publish to GitHub
-        if: github.event_name != 'pull_request' && github.repository == env.MASTER_REPO
+        if: github.event_name != 'push' && github.repository == env.MASTER_REPO
         uses: elgohr/Publish-Docker-Github-Action@2.22
         env:
           VERSION: ${{ env.VERSION }}
@@ -79,7 +80,7 @@ jobs:
 
       # this will publish to the clowder dockerhub repo
       - name: Publish to Docker Hub
-        if: github.event_name != 'pull_request' && github.repository == env.MASTER_REPO
+        if: github.event_name != 'push' && github.repository == env.MASTER_REPO
         uses: elgohr/Publish-Docker-Github-Action@2.22
         env:
           VERSION: ${{ env.VERSION }}
@@ -95,7 +96,7 @@ jobs:
       # this will update the README of the dockerhub repo
       - name: check file
         id: filecheck
-        if: github.event_name != 'pull_request' && github.repository == env.MASTER_REPO
+        if: github.event_name != 'push' && github.repository == env.MASTER_REPO
         run: |
           if [ -e "README.md" ]; then
             echo "##[set-output name=exists;]true"
@@ -103,7 +104,7 @@ jobs:
             echo "##[set-output name=exists;]false"
           fi
       - name: Docker Hub Description
-        if: github.event_name != 'pull_request' && github.repository == env.MASTER_REPO && steps.filecheck.outputs.exists == 'true'
+        if: github.event_name != 'push' && github.repository == env.MASTER_REPO && steps.filecheck.outputs.exists == 'true'
         uses: peter-evans/dockerhub-description@v2
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
