@@ -7,8 +7,9 @@ on:
     branches:
       - main
 
-  schedule:
-    - cron: '0 0 * * *'
+  repository_dispatch:
+    types:
+      - pyclowder  
 
 # Certain actions will only run when this is the main repo.
 env:
